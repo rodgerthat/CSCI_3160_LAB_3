@@ -1,0 +1,126 @@
+Microsoft (R) Macro Assembler Version 11.00.50727.1	    02/11/14 13:49:53
+main.asm						     Page 1 - 1
+
+
+				; Example assembly language program handout
+				; Read two integers from user and display the sum
+				; Author:  Suk Jai Seo 
+				; Date:    1/31/2014
+
+				; Assembler directives
+				.586 			;accept instructions for 586
+				.MODEL FLAT 		;generate code for flat memory
+				INCLUDE io.h 		;header file for input/output
+			      C ; IO.H -- header file for I/O macros (listing suppressed)
+			      C .NOLIST      ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+				.STACK  4096 		;reserve 4096-byte stack 
+
+ 00000000			.DATA 			; Data section begins here: reserve storage for data
+ 00000000 45 6E 74 65 72	prompt 		BYTE    	"Enter a number",0		;prompt string to be displayed in input message box
+	   20 61 20 6E 75
+	   6D 62 65 72 00
+ 0000000F  00000014 [		asciiInNum		BYTE    	20 DUP (?)			;ASCII input for an integer
+	    00
+	   ]
+ 00000023 54 68 65 20 73	outMsgLabel		BYTE  		"The sum is", 0		;string to be displayed in output message box
+	   75 6D 20 69 73
+	   00
+ 0000002E  0000000B [		asciiOutSum    	BYTE    	11 DUP (?), 0			;ASCII codes/bytes for sum to be displayed
+	    00
+	   ] 00
+ 0000003A 00000000		int1 			DWORD   	?				;first 32-bit integer
+ 0000003E 00000000		int2 			DWORD   	?				;second 32-bit integer
+ 00000042 00000000		sum			DWORD		?				;32-bit integer sum
+
+ 00000000			.CODE			; Code section begins here 
+ 00000000			_MainProc		PROC						; main procedure starts here
+				        		;read ASCII input for first number, convert to 2's comp, and store in memory
+							input   	prompt, asciiInNum, 20	;prompt for, read, and store ASCII characters
+				        		atod    	asciiInNum 			;convert ASCII to 2's comp and store in EAX
+ 0000002D  A3 0000003A R	        		mov     	int1, eax    			;store 2's comp in memory
+
+				        		;read ASCII input for second number, convert to 2's comp, and store in memory
+				        		input   	prompt, asciiInNum, 20	;prompt for, read, and store ASCII characters
+				        		atod    	asciiInNum        		;convert ASCII to 2's comp and store in EAX
+ 0000005F  A3 0000003E R				mov     	int2, eax			;store 2's comp in memory
+								
+							;add the two integers and store sum (2's comp) in memory   
+ 00000064  A1 0000003A R	        		mov     	eax, int1    			; copy first integer to EAX
+ 00000069  03 05 0000003E R	        		add     	eax, int2    			; add second integer
+ 0000006F  A3 00000042 R	        		mov		sum, eax			; store sum (2's comp) in memory
+								
+							;convert 2's comp to ASCII and display result
+							dtoa    	asciiOutSum, sum       	; convert 2's comp to ASCII and store in memory
+				        		output  	outMsgLabel, asciiOutSum	; output label string and sum string
+
+ 000000A9  B8 00000000		        		mov     	eax, 0  			; exit with return code 0
+ 000000AE  C3			        		ret
+ 000000AF			_MainProc 		ENDP						; end of main procedure
+							END                             		; end of source code
+
+Microsoft (R) Macro Assembler Version 11.00.50727.1	    02/11/14 13:49:53
+main.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atow . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+wtoa . . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000046 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000AF Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+_MainProc  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000AF Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+_getInput  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+_showOutput  . . . . . . . . . .	L Near	 00000000 FLAT	External
+asciiInNum . . . . . . . . . . .	Byte	 0000000F _DATA	
+asciiOutSum  . . . . . . . . . .	Byte	 0000002E _DATA	
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atowproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+int1 . . . . . . . . . . . . . .	DWord	 0000003A _DATA	
+int2 . . . . . . . . . . . . . .	DWord	 0000003E _DATA	
+outMsgLabel  . . . . . . . . . .	Byte	 00000023 _DATA	
+prompt . . . . . . . . . . . . .	Byte	 00000000 _DATA	
+sum  . . . . . . . . . . . . . .	DWord	 00000042 _DATA	
+wtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+
+	   0 Warnings
+	   0 Errors
